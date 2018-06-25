@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Мy friends list</title>
+    <link rel="stylesheet" href="./src/css/styles.css">
+</head>
+<body>
+    <div id="app">
+        <div class="friends-list-wrapper">
+            <div class="friend-list-heading-container">
+                <h3 class="friends-list-heading">Список друзей <span class="friends-count">({{friendsCount}})</span></h3>
+                <button v-on:click="toggleListVisibility"
+                        class="show-hide-list-button">{{showHideButtonText}}</button>
+            </div>
+            <ul v-show="visible" class="friends-list">
+                <li v-for="friend in friends" class="friends-list-item friend">
+                    <!--<div class="friend-name">{{friend.firstName + ' ' + friend.patronym + ' ' + friend.lastName}}</div>-->
+                    <div class="friend-name">{{getFullName(friend)}}</div>
+                    <div class="friend-photo-wrapper">
+                        <img v-if="friend.photo"
+                             v-bind:src="friend.photo"
+                             alt="photo"
+                             class="friend-photo">
+                        <img v-else
+                             v-bind:src="defaultPhoto"
+                             alt="No photo"
+                             class="friend-photo default">
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- версия для разработки, включает отображение полезных предупреждений в консоли -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    defaultPhoto: 'http://via.placeholder.com/200x200?text=No%20photo',
+                    friends: [
+                        {
+                            firstName: 'Александр',
+                            patronym: 'Сергеевич',
+                            lastName: 'Пушкин',
+                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Portrait_of_Alexander_Pushkin_%28Orest_Kiprensky%2C_1827%29.PNG/1200px-Portrait_of_Alexander_Pushkin_%28Orest_Kiprensky%2C_1827%29.PNG'
+                        },
+                        {
+                            firstName: 'Михаил',
+                            patronym: 'Юрьевич',
+                            lastName: 'Лермонтов',
+                            photo: null
+                        }
+                    ],
+                    visible: true
+                }
+            },
+            computed: {
+                friendsCount: function() {
+                    return this.friends.length;
+                },
+                showHideButtonText: function () {
+                    if (this.visible) {
+                        return 'Скрыть';
+                    } else {
+                        return 'Показать';
+                    }
+                }
+            },
+            methods: {
+                getFullName: function (friend) {
+                    let fullName = `${friend.firstName || ''} ${friend.patronym || ''} ${friend.lastName || ''}`;
+
+                    return fullName;
+                },
+                toggleListVisibility: function () {
+                    this.visible = !this.visible;
+                }
+            }
+        })
+    </script>
+</body>
+</html>
