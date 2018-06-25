@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Мy friends list</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
     <link rel="stylesheet" href="./src/css/styles.css">
 </head>
 <body>
@@ -11,12 +12,14 @@
             <div class="friend-list-heading-container">
                 <h3 class="friends-list-heading">Список друзей <span class="friends-count">({{friendsCount}})</span></h3>
                 <button v-on:click="toggleListVisibility"
-                        class="show-hide-list-button">{{showHideButtonText}}</button>
+                        v-tooltip.bottom-end="`${showHideButtonText} список пользователей`"
+                        class="show-hide-list-button button"
+                >{{showHideButtonText}}</button>
             </div>
             <ul v-show="visible" class="friends-list">
-                <li v-for="friend in friends" class="friends-list-item friend">
-                    <!--<div class="friend-name">{{friend.firstName + ' ' + friend.patronym + ' ' + friend.lastName}}</div>-->
-                    <div class="friend-name">{{getFullName(friend)}}</div>
+                <li v-for="friend in friends"
+                    class="friends-list-item friend"
+                >
                     <div class="friend-photo-wrapper">
                         <img v-if="friend.photo"
                              v-bind:src="friend.photo"
@@ -27,16 +30,32 @@
                              alt="No photo"
                              class="friend-photo default">
                     </div>
+                    <div class="friend-name">{{getFullName(friend) | uppercase}}</div>
+                    <button v-copy="getFullName(friend)"
+                            v-tooltip.bottom-end="`Копировать ФИО пользователя`"
+                            class="copy-fullname-button button"
+                    >
+                        <i class="fa fa-copy"></i>
+                    </button>
                 </li>
             </ul>
         </div>
     </div>
     <!-- версия для разработки, включает отображение полезных предупреждений в консоли -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/v-copy@0.1.0/dist/v-copy.js"></script>
+    <script src="https://unpkg.com/v-tooltip"></script>
 
     <script>
         const app = new Vue({
             el: '#app',
+            filters: {
+                uppercase: function (value) {
+                	if (value) {
+                		return value.toUpperCase();
+					}
+                }
+            },
             data: function () {
                 return {
                     defaultPhoto: 'http://via.placeholder.com/200x200?text=No%20photo',
@@ -52,6 +71,24 @@
                             patronym: 'Юрьевич',
                             lastName: 'Лермонтов',
                             photo: null
+                        },
+                        {
+                            firstName: 'Федор',
+                            patronym: 'Михайлович',
+                            lastName: 'Достоевский',
+                            photo: "http://trikky.ru/wp-content/blogs.dir/1/files/2018/02/Dostoevsky.jpg"
+                        },
+                        {
+                            firstName: 'Лев',
+                            patronym: 'Николаевич',
+                            lastName: 'Толстой',
+                            photo: "http://um.mos.ru/upload/resize_cache/iblock/135/300_300_2/Lev_Tolstoy.jpg"
+                        },
+                        {
+                            firstName: 'Николай',
+                            patronym: 'Васильевич',
+                            lastName: 'Гоголь',
+                            photo: "https://b1.culture.ru/c/278571.jpg"
                         }
                     ],
                     visible: true
