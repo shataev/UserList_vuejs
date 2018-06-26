@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Мy friends list</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+    <link rel="stylesheet" href="./src/css/styles.css">
+</head>
+<body>
+<div id="app">
+    <user-form v-bind:user="user"></user-form>
+</div>
+
+<!--Шаблон для формы редактирования данных пользователя-->
+<div class="template-container">
+    <div id="user-form">
+        <form class="col-sm-3">
+            <div class="form-group">
+                <label for="useFirstName">Имя</label>
+                <input type="text"
+                       class="form-control"
+                       id="useFirstName"
+                       placeholder="Имя"
+                       v-bind:value="user.firstName">
+            </div>
+            <div class="form-group">
+                <label for="userPatronym">Отчество</label>
+                <input type="text"
+                       class="form-control"
+                       id="userPatronym"
+                       placeholder="Отчество"
+                       v-bind:value="user.patronym">
+            </div>
+            <div class="form-group">
+                <label for="userLastName">Фамилия</label>
+                <input type="text"
+                       class="form-control"
+                       id="userLastName"
+                       placeholder="Фамилия"
+                       v-bind:value="user.lastName">
+            </div>
+            <div class="form-group">
+                <label for="userPhotoLink">Ссылка на фото</label>
+                <input type="text"
+                       class="form-control"
+                       id="userPhotoLink"
+                       placeholder="Ссылка на фото"
+                       v-bind:value="user.photo">
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- версия для разработки, включает отображение полезных предупреждений в консоли -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/v-copy@0.1.0/dist/v-copy.js"></script>
+<script src="https://unpkg.com/v-tooltip"></script>
+
+<script>
+	Vue.component('user-form', {
+		props: ['user'],
+		template: '#user-form',
+	});
+
+	const app = new Vue({
+		el: '#app',
+		data: function () {
+			return {
+				user: {
+						firstName: 'Александр',
+						patronym: 'Сергеевич',
+						lastName: 'Пушкин',
+						photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Portrait_of_Alexander_Pushkin_%28Orest_Kiprensky%2C_1827%29.PNG/1200px-Portrait_of_Alexander_Pushkin_%28Orest_Kiprensky%2C_1827%29.PNG'
+					},
+				visible: true
+			}
+		}
+	})
+</script>
+</body>
+</html>

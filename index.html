@@ -14,9 +14,10 @@
                 <button v-on:click="toggleListVisibility"
                         v-tooltip.bottom-end="`${showHideButtonText} список пользователей`"
                         class="show-hide-list-button button"
+                        type="button"
                 >{{showHideButtonText}}</button>
             </div>
-            <ul v-show="visible" class="friends-list">
+            <!--<ul v-show="visible" class="friends-list">
                 <li v-for="friend in friends"
                     class="friends-list-item friend"
                 >
@@ -38,6 +39,39 @@
                         <i class="fa fa-copy"></i>
                     </button>
                 </li>
+            </ul>-->
+            <user-list v-bind:users="friends"
+                       v-show="visible"
+            ></user-list>
+        </div>
+    </div>
+
+    <!--Шаблон для списка пользователей-->
+    <div class="template-container">
+        <div id="users-list">
+            <ul class="friends-list">
+                <li v-for="user in users"
+                    class="friends-list-item friend"
+                >
+                    <div class="friend-photo-wrapper">
+                        <img v-if="user.photo"
+                             v-bind:src="user.photo"
+                             alt="photo"
+                             class="friend-photo">
+                        <img v-else
+                             v-bind:src="defaultPhoto"
+                             alt="No photo"
+                             class="friend-photo default">
+                    </div>
+                    <div class="friend-name">{{getFullName(user) | uppercase}}</div>
+                    <button v-copy="getFullName(user)"
+                            v-tooltip.bottom-end="`Копировать ФИО пользователя`"
+                            class="copy-fullname-button button"
+                            type="button"
+                    >
+                        <i class="fa fa-copy"></i>
+                    </button>
+                </li>
             </ul>
         </div>
     </div>
@@ -47,18 +81,34 @@
     <script src="https://unpkg.com/v-tooltip"></script>
 
     <script>
-        const app = new Vue({
-            el: '#app',
-            filters: {
-                uppercase: function (value) {
-                	if (value) {
-                		return value.toUpperCase();
-					}
-                }
-            },
+        Vue.component('user-list', {
+            props: ['users'],
             data: function () {
                 return {
-                    defaultPhoto: 'http://via.placeholder.com/200x200?text=No%20photo',
+					defaultPhoto: 'http://via.placeholder.com/200x200?text=No%20photo'
+                }
+            },
+			template: '#users-list',
+			filters: {
+				uppercase: function (value) {
+					if (value) {
+						return value.toUpperCase();
+					}
+				}
+			},
+            methods: {
+				getFullName: function (friend) {
+					let fullName = `${friend.firstName || ''} ${friend.patronym || ''} ${friend.lastName || ''}`;
+
+					return fullName;
+				},
+            }
+        });
+
+        const app = new Vue({
+            el: '#app',
+            data: function () {
+                return {
                     friends: [
                         {
                             firstName: 'Александр',
@@ -107,14 +157,9 @@
                 }
             },
             methods: {
-                getFullName: function (friend) {
-                    let fullName = `${friend.firstName || ''} ${friend.patronym || ''} ${friend.lastName || ''}`;
-
-                    return fullName;
-                },
                 toggleListVisibility: function () {
                     this.visible = !this.visible;
-                }
+                },
             }
         })
     </script>

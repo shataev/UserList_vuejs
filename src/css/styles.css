@@ -1,3 +1,7 @@
+.template-container {
+    display: none;
+}
+
 .friends-list-wrapper {
     width: 400px;
 }
