@@ -12,7 +12,7 @@
             <div class="friend-list-heading-container">
                 <h3 class="friends-list-heading">Список друзей <span class="friends-count">({{friendsCount}})</span></h3>
                 <button v-on:click="toggleListVisibility"
-                        v-tooltip.bottom-end="`${showHideButtonText} список пользователей`"
+                        v-tooltip.bottom-end="`${showHideButtonTitleText}`"
                         class="show-hide-list-button button"
                         type="button"
                 >{{showHideButtonText}}</button>
@@ -149,11 +149,10 @@
                     return this.friends.length;
                 },
                 showHideButtonText: function () {
-                    if (this.visible) {
-                        return 'Скрыть';
-                    } else {
-                        return 'Показать';
-                    }
+                    return this.visible ? 'Скрыть': 'Показать';
+                },
+                showHideButtonTitleText: function () {
+                    return this.visible ? 'Скрыть список пользователей': 'Показать список пользователей';
                 }
             },
             methods: {

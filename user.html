@@ -9,7 +9,9 @@
 </head>
 <body>
 <div id="app">
-    <user-form v-bind:user="user"></user-form>
+    <user-form v-bind:user="user"
+               v-on:change-user-data="onChangeUserData"
+    ></user-form>
 </div>
 
 <!--Шаблон для формы редактирования данных пользователя-->
@@ -21,8 +23,10 @@
                 <input type="text"
                        class="form-control"
                        id="useFirstName"
+                       data-field-name="firstName"
                        placeholder="Имя"
-                       v-bind:value="user.firstName">
+                       v-bind:value="user.firstName"
+                       v-on:change="changeInputValue($event)">
             </div>
             <div class="form-group">
                 <label for="userPatronym">Отчество</label>
@@ -30,7 +34,8 @@
                        class="form-control"
                        id="userPatronym"
                        placeholder="Отчество"
-                       v-bind:value="user.patronym">
+                       v-bind:value="user.patronym"
+                       v-on:change="changeInputValue($event)">
             </div>
             <div class="form-group">
                 <label for="userLastName">Фамилия</label>
@@ -38,7 +43,8 @@
                        class="form-control"
                        id="userLastName"
                        placeholder="Фамилия"
-                       v-bind:value="user.lastName">
+                       v-bind:value="user.lastName"
+                       v-on:change="changeInputValue($event)">
             </div>
             <div class="form-group">
                 <label for="userPhotoLink">Ссылка на фото</label>
@@ -46,7 +52,8 @@
                        class="form-control"
                        id="userPhotoLink"
                        placeholder="Ссылка на фото"
-                       v-bind:value="user.photo">
+                       v-bind:value="user.photo"
+                       v-on:change="changeInputValue($event)">
             </div>
         </form>
     </div>
@@ -58,13 +65,25 @@
 <script src="https://unpkg.com/v-tooltip"></script>
 
 <script>
-	Vue.component('user-form', {
-		props: ['user'],
+	var UserForm = {
 		template: '#user-form',
-	});
+        props: ['user'],
+        methods: {
+		    changeInputValue: function (e) {
+                const changedInput = e.target;
+                const fieldName = changedInput.dataset.fieldName;
+                const newValue = changedInput.value;
+
+                this.$emit('change-user-data', fieldName, newValue);
+            }
+        }
+	};
 
 	const app = new Vue({
 		el: '#app',
+        components: {
+            'user-form': UserForm
+        },
 		data: function () {
 			return {
 				user: {
@@ -75,7 +94,12 @@
 					},
 				visible: true
 			}
-		}
+		},
+        methods: {
+		    onChangeUserData: function (fieldName, newValue) {
+		        this.user[fieldName] = newValue;
+            }
+        }
 	})
 </script>
 </body>
