@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Мy friends list</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
     <link rel="stylesheet" href="./src/css/styles.css">
 </head>
@@ -10,7 +11,7 @@
     <div id="app">
         <div class="friends-list-wrapper">
             <div class="friend-list-heading-container">
-                <h3 class="friends-list-heading">Список друзей <span class="friends-count">({{friendsCount}})</span></h3>
+                <h5 class="friends-list-heading">Список пользователей <span class="friends-count">({{friendsCount}})</span></h5>
                 <button v-on:click="toggleListVisibility"
                         v-tooltip.bottom-end="`${showHideButtonTitleText}`"
                         class="show-hide-list-button button"
@@ -54,8 +55,8 @@
                     class="friends-list-item friend"
                 >
                     <div class="friend-photo-wrapper">
-                        <img v-if="user.photo"
-                             v-bind:src="user.photo"
+                        <img v-if="user.picture"
+                             v-bind:src="user.picture"
                              alt="photo"
                              class="friend-photo">
                         <img v-else
@@ -71,6 +72,13 @@
                     >
                         <i class="fa fa-copy"></i>
                     </button>
+                    <button v-tooltip.bottom-end="`Редактировать данные пользователя`"
+                            class="edit-user-button button"
+                            type="button"
+                            v-on:click="openEditUserPage(user.id)"
+                    >
+                        <i class="fa fa-edit"></i>
+                    </button>
                 </li>
             </ul>
         </div>
@@ -81,8 +89,10 @@
     <script src="https://unpkg.com/v-tooltip"></script>
 
     <script>
-        Vue.component('user-list', {
-            props: ['users'],
+        var UserList = {
+            props: {
+            	users: Array
+			},
             data: function () {
                 return {
 					defaultPhoto: 'http://via.placeholder.com/200x200?text=No%20photo'
@@ -98,48 +108,24 @@
 			},
             methods: {
 				getFullName: function (friend) {
-					let fullName = `${friend.firstName || ''} ${friend.patronym || ''} ${friend.lastName || ''}`;
+					let fullName = `${friend.name.first || ''} ${friend.name.last || ''}`;
 
 					return fullName;
 				},
+				openEditUserPage: function (id) {
+                    location.href = `/user.html?id=${id}`;
+				}
             }
-        });
+        };
 
         const app = new Vue({
             el: '#app',
+            components: {
+                'user-list': UserList
+            },
             data: function () {
                 return {
                     friends: [
-                        {
-                            firstName: 'Александр',
-                            patronym: 'Сергеевич',
-                            lastName: 'Пушкин',
-                            photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Portrait_of_Alexander_Pushkin_%28Orest_Kiprensky%2C_1827%29.PNG/1200px-Portrait_of_Alexander_Pushkin_%28Orest_Kiprensky%2C_1827%29.PNG'
-                        },
-                        {
-                            firstName: 'Михаил',
-                            patronym: 'Юрьевич',
-                            lastName: 'Лермонтов',
-                            photo: null
-                        },
-                        {
-                            firstName: 'Федор',
-                            patronym: 'Михайлович',
-                            lastName: 'Достоевский',
-                            photo: "http://trikky.ru/wp-content/blogs.dir/1/files/2018/02/Dostoevsky.jpg"
-                        },
-                        {
-                            firstName: 'Лев',
-                            patronym: 'Николаевич',
-                            lastName: 'Толстой',
-                            photo: "http://um.mos.ru/upload/resize_cache/iblock/135/300_300_2/Lev_Tolstoy.jpg"
-                        },
-                        {
-                            firstName: 'Николай',
-                            patronym: 'Васильевич',
-                            lastName: 'Гоголь',
-                            photo: "https://b1.culture.ru/c/278571.jpg"
-                        }
                     ],
                     visible: true
                 }
@@ -155,12 +141,41 @@
                     return this.visible ? 'Скрыть список пользователей': 'Показать список пользователей';
                 }
             },
+            mounted: function () {
+            	getData().then(reqData => {
+            		this.friends = JSON.parse(reqData);
+                });
+            },
             methods: {
                 toggleListVisibility: function () {
                     this.visible = !this.visible;
-                },
+                }
             }
-        })
+        });
+
+        function getData () {
+        	return new Promise((resolve, reject) => {
+				let xhr = new XMLHttpRequest();
+
+				xhr.open('GET', '/users', true);
+
+				xhr.onreadystatechange = () => {
+					if (xhr.readyState !== 4) {
+						return;
+					}
+
+					if (xhr.status !== 200) {
+						const error =  new Error(xhr.status + ': ' + xhr.statusText);
+
+						reject(error);
+					} else {
+						resolve(xhr.responseText);
+					}
+				};
+
+				xhr.send();
+            })
+        }
     </script>
 </body>
 </html>

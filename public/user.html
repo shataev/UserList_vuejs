@@ -5,56 +5,55 @@
     <title>Мy friends list</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
-    <link rel="stylesheet" href="./src/css/styles.css">
+    <link rel="stylesheet" href="src/css/styles.css">
 </head>
 <body>
 <div id="app">
+    <h4 class="heading">Редактировать данные</h4>
     <user-form v-bind:user="user"
                v-on:change-user-data="onChangeUserData"
+               v-on:save-data="onSaveData"
     ></user-form>
 </div>
 
 <!--Шаблон для формы редактирования данных пользователя-->
 <div class="template-container">
     <div id="user-form">
-        <form class="col-sm-3">
+        <form class="col-sm-3 user-data-edit-form">
             <div class="form-group">
-                <label for="useFirstName">Имя</label>
+                <label for="userFirstName">Имя</label>
                 <input type="text"
                        class="form-control"
-                       id="useFirstName"
-                       data-field-name="firstName"
+                       id="userFirstName"
+                       data-field-name="first"
                        placeholder="Имя"
-                       v-bind:value="user.firstName"
-                       v-on:change="changeInputValue($event)">
-            </div>
-            <div class="form-group">
-                <label for="userPatronym">Отчество</label>
-                <input type="text"
-                       class="form-control"
-                       id="userPatronym"
-                       placeholder="Отчество"
-                       v-bind:value="user.patronym"
-                       v-on:change="changeInputValue($event)">
+                       v-bind:value="user.name.first"
+                       v-on:change="changeInputValue($event, true)">
             </div>
             <div class="form-group">
                 <label for="userLastName">Фамилия</label>
                 <input type="text"
                        class="form-control"
                        id="userLastName"
+                       data-field-name="last"
                        placeholder="Фамилия"
-                       v-bind:value="user.lastName"
-                       v-on:change="changeInputValue($event)">
+                       v-bind:value="user.name.last"
+                       v-on:change="changeInputValue($event, true)">
             </div>
             <div class="form-group">
                 <label for="userPhotoLink">Ссылка на фото</label>
                 <input type="text"
                        class="form-control"
                        id="userPhotoLink"
+                       data-field-name="picture"
                        placeholder="Ссылка на фото"
-                       v-bind:value="user.photo"
+                       v-bind:value="user.picture"
                        v-on:change="changeInputValue($event)">
             </div>
+            <button type="button"
+                    class="btn btn-primary"
+                    v-on:click="saveButtonClick"
+            >Сохранить</button>
         </form>
     </div>
 </div>
@@ -67,14 +66,21 @@
 <script>
 	var UserForm = {
 		template: '#user-form',
-        props: ['user'],
+        props: {
+			user: {
+				type: Object,
+			}
+		},
         methods: {
-		    changeInputValue: function (e) {
+		    changeInputValue: function (e, isName) {
                 const changedInput = e.target;
                 const fieldName = changedInput.dataset.fieldName;
                 const newValue = changedInput.value;
 
-                this.$emit('change-user-data', fieldName, newValue);
+                this.$emit('change-user-data', fieldName, newValue, isName);
+            },
+			saveButtonClick: function () {
+		    	this.$emit('save-data');
             }
         }
 	};
@@ -87,20 +93,61 @@
 		data: function () {
 			return {
 				user: {
-						firstName: 'Александр',
-						patronym: 'Сергеевич',
-						lastName: 'Пушкин',
-						photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Portrait_of_Alexander_Pushkin_%28Orest_Kiprensky%2C_1827%29.PNG/1200px-Portrait_of_Alexander_Pushkin_%28Orest_Kiprensky%2C_1827%29.PNG'
-					},
-				visible: true
+					name: {}
+                }
 			}
 		},
+        computed: {
+		    userId: function () {
+				return location.search.replace('?', '').split('=')[1];
+            }
+        },
+		mounted: function () {
+			getUserData(this.userId).then(userData => {
+				this.user = JSON.parse(userData);
+            });
+		},
         methods: {
-		    onChangeUserData: function (fieldName, newValue) {
-		        this.user[fieldName] = newValue;
+		    onChangeUserData: function (fieldName, newValue, isName = false) {
+		        if (isName) {
+					this.user.name[fieldName] = newValue;
+                } else {
+					this.user[fieldName] = newValue;
+                }
+            },
+			onSaveData: function () {
+				let xhr = new XMLHttpRequest();
+
+				xhr.open('PUT', `/users/${this.userId}`, true);
+				xhr.setRequestHeader('Content-Type', 'application/json');
+				xhr.send(JSON.stringify(this.user));
             }
         }
-	})
+	});
+
+    function getUserData (id) {
+		return new Promise((resolve, reject) => {
+			let xhr = new XMLHttpRequest();
+
+			xhr.open('GET', `/users/${id}`, true);
+
+			xhr.onreadystatechange = () => {
+				if (xhr.readyState !== 4) {
+					return;
+				}
+
+				if (xhr.status !== 200) {
+					const error =  new Error(xhr.status + ': ' + xhr.statusText);
+
+					reject(error);
+				} else {
+					resolve(xhr.responseText);
+				}
+			};
+
+			xhr.send();
+		})
+    }
 </script>
 </body>
 </html>

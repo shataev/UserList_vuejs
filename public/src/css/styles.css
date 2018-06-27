@@ -1,3 +1,7 @@
+#app {
+    padding: 30px;
+}
+
 .template-container {
     display: none;
 }
@@ -52,19 +56,25 @@
     overflow: hidden;
     border-radius: 50%;
     flex-shrink: 0;
-    margin-right: 10px;
+    margin-right: 20px;
 }
 
 .friend-name {
     font-family: sans-serif;
     font-size: 18px;
+    flex-grow: 2;
 }
 
 .friend-photo {
     width: 100%;
 }
 
-.copy-fullname-button {
+.copy-fullname-button,
+.edit-user-button {
     background: none;
     border: none;
+}
+
+.user-data-edit-form {
+    padding: 0;
 }
