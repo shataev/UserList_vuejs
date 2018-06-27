@@ -9,51 +9,37 @@
 </head>
 <body>
     <div id="app">
-        <div class="friends-list-wrapper">
-            <div class="friend-list-heading-container">
-                <h5 class="friends-list-heading">Список пользователей <span class="friends-count">({{friendsCount}})</span></h5>
-                <button v-on:click="toggleListVisibility"
-                        v-tooltip.bottom-end="`${showHideButtonTitleText}`"
-                        class="show-hide-list-button button"
-                        type="button"
-                >{{showHideButtonText}}</button>
-            </div>
-            <!--<ul v-show="visible" class="friends-list">
-                <li v-for="friend in friends"
-                    class="friends-list-item friend"
-                >
-                    <div class="friend-photo-wrapper">
-                        <img v-if="friend.photo"
-                             v-bind:src="friend.photo"
-                             alt="photo"
-                             class="friend-photo">
-                        <img v-else
-                             v-bind:src="defaultPhoto"
-                             alt="No photo"
-                             class="friend-photo default">
-                    </div>
-                    <div class="friend-name">{{getFullName(friend) | uppercase}}</div>
-                    <button v-copy="getFullName(friend)"
-                            v-tooltip.bottom-end="`Копировать ФИО пользователя`"
-                            class="copy-fullname-button button"
-                    >
-                        <i class="fa fa-copy"></i>
-                    </button>
-                </li>
-            </ul>-->
-            <user-list v-bind:users="friends"
-                       v-show="visible"
-            ></user-list>
-        </div>
+        <component v-bind:is="isList ? 'user-list' : 'user-form'"
+                   v-bind:users="friends"
+                   v-bind:user="user"
+                   v-on:show-user-form="showUserForm"
+                   v-on:change-user-data="onChangeUserData"
+                   v-on:save-data="onSaveData"
+                   v-on:go-to-list="onGoToList"
+        >
+
+        </component>
     </div>
 
-    <!--Шаблон для списка пользователей-->
+
     <div class="template-container">
+        <!--Шаблон для списка пользователей-->
         <div id="users-list">
-            <ul class="friends-list">
-                <li v-for="user in users"
-                    class="friends-list-item friend"
+            <div class="friends-list-wrapper">
+                <div class="friend-list-heading-container">
+                    <h5 class="friends-list-heading">Список пользователей <span class="friends-count">({{friendsCount}})</span></h5>
+                    <button v-on:click="toggleListVisibility"
+                            v-tooltip.bottom-end="`${showHideButtonTitleText}`"
+                            class="show-hide-list-button button"
+                            type="button"
+                    >{{showHideButtonText}}</button>
+                </div>
+                <ul class="friends-list"
+                    v-show="visible"
                 >
+                    <li v-for="user in users"
+                        class="friends-list-item friend"
+                    >
                     <div class="friend-photo-wrapper">
                         <img v-if="user.picture"
                              v-bind:src="user.picture"
@@ -81,58 +67,76 @@
                     </button>
                 </li>
             </ul>
+            </div>
+        </div>
+
+        <!--Шаблон для формы редактирования данных польлзователя-->
+        <div id="user-form">
+            <form class="col-sm-3 user-data-edit-form">
+                <div class="form-group">
+                    <label for="userFirstName">Имя</label>
+                    <input type="text"
+                           class="form-control"
+                           id="userFirstName"
+                           data-field-name="first"
+                           placeholder="Имя"
+                           v-bind:value="user.name.first"
+                           v-on:change="changeInputValue($event, true)">
+                </div>
+                <div class="form-group">
+                    <label for="userLastName">Фамилия</label>
+                    <input type="text"
+                           class="form-control"
+                           id="userLastName"
+                           data-field-name="last"
+                           placeholder="Фамилия"
+                           v-bind:value="user.name.last"
+                           v-on:change="changeInputValue($event, true)">
+                </div>
+                <div class="form-group">
+                    <label for="userPhotoLink">Ссылка на фото</label>
+                    <input type="text"
+                           class="form-control"
+                           id="userPhotoLink"
+                           data-field-name="picture"
+                           placeholder="Ссылка на фото"
+                           v-bind:value="user.picture"
+                           v-on:change="changeInputValue($event)">
+                </div>
+                <div class="buttons-container">
+                    <button type="button"
+                            class="btn btn-primary"
+                            v-on:click="saveButtonClick"
+                    >Сохранить</button>
+                    <button type="button"
+                            class="btn btn-secondary"
+                            v-on:click="goTotList"
+                    >
+                        Вернуться к списку</button>
+                </div>
+            </form>
         </div>
     </div>
+
     <!-- версия для разработки, включает отображение полезных предупреждений в консоли -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/v-copy@0.1.0/dist/v-copy.js"></script>
     <script src="https://unpkg.com/v-tooltip"></script>
 
     <script>
-        var UserList = {
+        let UserList = {
             props: {
             	users: Array
 			},
             data: function () {
                 return {
-					defaultPhoto: 'http://via.placeholder.com/200x200?text=No%20photo'
-                }
-            },
-			template: '#users-list',
-			filters: {
-				uppercase: function (value) {
-					if (value) {
-						return value.toUpperCase();
-					}
-				}
-			},
-            methods: {
-				getFullName: function (friend) {
-					let fullName = `${friend.name.first || ''} ${friend.name.last || ''}`;
-
-					return fullName;
-				},
-				openEditUserPage: function (id) {
-                    location.href = `/user.html?id=${id}`;
-				}
-            }
-        };
-
-        const app = new Vue({
-            el: '#app',
-            components: {
-                'user-list': UserList
-            },
-            data: function () {
-                return {
-                    friends: [
-                    ],
-                    visible: true
+					defaultPhoto: 'http://via.placeholder.com/200x200?text=No%20photo',
+                    visible: true,
                 }
             },
             computed: {
                 friendsCount: function() {
-                    return this.friends.length;
+                    return this.users.length;
                 },
                 showHideButtonText: function () {
                     return this.visible ? 'Скрыть': 'Показать';
@@ -141,19 +145,105 @@
                     return this.visible ? 'Скрыть список пользователей': 'Показать список пользователей';
                 }
             },
+			filters: {
+				uppercase: function (value) {
+					if (value) {
+						return value.toUpperCase();
+					}
+				}
+			},
+            methods: {
+                toggleListVisibility: function () {
+                    this.visible = !this.visible;
+                },
+				getFullName: function (friend) {
+					let fullName = `${friend.name.first || ''} ${friend.name.last || ''}`;
+
+					return fullName;
+				},
+				openEditUserPage: function (id) {
+                    this.$emit('show-user-form', id);
+				}
+            },
+            template: '#users-list'
+        };
+
+        let UserForm = {
+            template: '#user-form',
+            props: {
+                user: {
+                    type: Object,
+                }
+            },
+            methods: {
+                changeInputValue: function (e, isName) {
+                    const changedInput = e.target;
+                    const fieldName = changedInput.dataset.fieldName;
+                    const newValue = changedInput.value;
+
+                    this.$emit('change-user-data', fieldName, newValue, isName);
+                },
+                saveButtonClick: function () {
+                    this.$emit('save-data');
+                },
+                goTotList: function () {
+                    this.$emit('go-to-list');
+                }
+            }
+        };
+
+        const app = new Vue({
+            el: '#app',
+            components: {
+                'user-list': UserList,
+                'user-form': UserForm,
+            },
+            data: function () {
+                return {
+                    friends: [
+                    ],
+                    isList: true,
+                    user : {
+                        name: {
+                            type: Object,
+                            required: true
+                        }
+                    }
+                }
+            },
             mounted: function () {
-            	getData().then(reqData => {
+                getListData().then(reqData => {
             		this.friends = JSON.parse(reqData);
                 });
             },
             methods: {
-                toggleListVisibility: function () {
-                    this.visible = !this.visible;
+                showUserForm: function (id) {
+                    getUserData(id).then(userData => {
+                        this.user = JSON.parse(userData);
+                        this.isList = !this.isList;
+                    });
+                },
+                onGoToList: function () {
+                    this.isList = !this.isList;
+                },
+                onChangeUserData: function (fieldName, newValue, isName = false) {
+                    if (isName) {
+                        this.user.name[fieldName] = newValue;
+                    } else {
+                        this.user[fieldName] = newValue;
+                    }
+                },
+                onSaveData: function () {
+                    const xhr = new XMLHttpRequest();
+
+                    xhr.open('PUT', `/users/${this.user.id}`, true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.send(JSON.stringify(this.user));
                 }
             }
         });
 
-        function getData () {
+        function getListData () {
         	return new Promise((resolve, reject) => {
 				let xhr = new XMLHttpRequest();
 
@@ -174,6 +264,30 @@
 				};
 
 				xhr.send();
+            })
+        }
+
+        function getUserData (id) {
+            return new Promise((resolve, reject) => {
+                let xhr = new XMLHttpRequest();
+
+                xhr.open('GET', `/users/${id}`, true);
+
+                xhr.onreadystatechange = () => {
+                    if (xhr.readyState !== 4) {
+                        return;
+                    }
+
+                    if (xhr.status !== 200) {
+                        const error =  new Error(xhr.status + ': ' + xhr.statusText);
+
+                        reject(error);
+                    } else {
+                        resolve(xhr.responseText);
+                    }
+                };
+
+                xhr.send();
             })
         }
     </script>
