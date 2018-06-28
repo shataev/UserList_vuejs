@@ -29,6 +29,7 @@
 .show-hide-list-button {
     width: 80px;
     height: 30px;
+    outline: none;
 }
 
 .friends-list {
@@ -73,8 +74,28 @@
 .edit-user-button {
     background: none;
     border: none;
+    padding: 0;
+}
+
+.copy-fullname-button {
+    margin-right: 20px;
 }
 
 .user-data-edit-form {
     padding: 0;
+}
+
+.tooltip.vue-tooltip-theme {
+    opacity: 1;
+    left: 10px!Important;
+}
+
+.tooltip-arrow {
+    left: -5px;
+    width: 10px;
+    height: 10px;
+    background: #000;
+    position: absolute;
+    top: -5px;
+    transform: rotateZ(-45deg);
 }

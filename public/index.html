@@ -29,7 +29,7 @@
                 <div class="friend-list-heading-container">
                     <h5 class="friends-list-heading">Список пользователей <span class="friends-count">({{friendsCount}})</span></h5>
                     <button v-on:click="toggleListVisibility"
-                            v-tooltip.bottom-end="`${showHideButtonTitleText}`"
+                            v-tooltip.right="`${showHideButtonTitleText}`"
                             class="show-hide-list-button button"
                             type="button"
                     >{{showHideButtonText}}</button>
@@ -52,13 +52,13 @@
                     </div>
                     <div class="friend-name">{{getFullName(user) | uppercase}}</div>
                     <button v-copy="getFullName(user)"
-                            v-tooltip.bottom-end="`Копировать ФИО пользователя`"
+                            v-tooltip.right="`Копировать ФИО пользователя`"
                             class="copy-fullname-button button"
                             type="button"
                     >
                         <i class="fa fa-copy"></i>
                     </button>
-                    <button v-tooltip.bottom-end="`Редактировать данные пользователя`"
+                    <button v-tooltip.right="`Редактировать данные пользователя`"
                             class="edit-user-button button"
                             type="button"
                             v-on:click="openEditUserPage(user.id)"
