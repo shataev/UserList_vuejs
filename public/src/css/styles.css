@@ -6,11 +6,11 @@
     display: none;
 }
 
-.friends-list-wrapper {
+.users-list-wrapper {
     width: 400px;
 }
 
-.friend-list-heading-container {
+.users-list-heading-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -32,14 +32,14 @@
     outline: none;
 }
 
-.friends-list {
+.users-list {
     margin: 0;
     padding: 0;
     list-style: none;
     border: 1px solid #ccc;
 }
 
-.friends-list-item.friend {
+.users-list-item.user {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -47,11 +47,11 @@
     border-bottom: 1px solid #ccc;
 }
 
-.friends-list-item.friend:last-child {
+.users-list-item.user:last-child {
     border: none;
 }
 
-.friend-photo-wrapper {
+.user-photo-wrapper {
     width: 100px;
     height: 100px;
     overflow: hidden;
@@ -60,13 +60,13 @@
     margin-right: 20px;
 }
 
-.friend-name {
+.user-name {
     font-family: sans-serif;
     font-size: 18px;
     flex-grow: 2;
 }
 
-.friend-photo {
+.user-photo {
     width: 100%;
 }
 

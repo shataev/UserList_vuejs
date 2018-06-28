@@ -10,11 +10,10 @@
 <body>
     <div id="app">
         <component v-bind:is="isList ? 'user-list' : 'user-form'"
-                   v-bind:users="friends"
+                   v-bind:users="users"
                    v-bind:user="user"
                    v-on:show-user-form="showUserForm"
                    v-on:change-user-data="onChangeUserData"
-                   v-on:save-data="onSaveData"
                    v-on:go-to-list="onGoToList"
         >
 
@@ -25,32 +24,32 @@
     <div class="template-container">
         <!--Шаблон для списка пользователей-->
         <div id="users-list">
-            <div class="friends-list-wrapper">
-                <div class="friend-list-heading-container">
-                    <h5 class="friends-list-heading">Список пользователей <span class="friends-count">({{friendsCount}})</span></h5>
+            <div class="users-list-wrapper">
+                <div class="users-list-heading-container">
+                    <h5 class="users-list-heading">Список пользователей <span class="users-count">({{friendsCount}})</span></h5>
                     <button v-on:click="toggleListVisibility"
                             v-tooltip.right="`${showHideButtonTitleText}`"
                             class="show-hide-list-button button"
                             type="button"
                     >{{showHideButtonText}}</button>
                 </div>
-                <ul class="friends-list"
+                <ul class="users-list"
                     v-show="visible"
                 >
                     <li v-for="user in users"
-                        class="friends-list-item friend"
+                        class="users-list-item user"
                     >
-                    <div class="friend-photo-wrapper">
+                    <div class="user-photo-wrapper">
                         <img v-if="user.picture"
                              v-bind:src="user.picture"
                              alt="photo"
-                             class="friend-photo">
+                             class="user-photo">
                         <img v-else
                              v-bind:src="defaultPhoto"
                              alt="No photo"
-                             class="friend-photo default">
+                             class="user-photo default">
                     </div>
-                    <div class="friend-name">{{getFullName(user) | uppercase}}</div>
+                    <div class="user-name">{{getFullName(user) | uppercase}}</div>
                     <button v-copy="getFullName(user)"
                             v-tooltip.right="`Копировать ФИО пользователя`"
                             class="copy-fullname-button button"
@@ -72,7 +71,7 @@
 
         <!--Шаблон для формы редактирования данных польлзователя-->
         <div id="user-form">
-            <form class="col-sm-3 user-data-edit-form">
+            <div class="col-sm-3 user-data-edit-form">
                 <div class="form-group">
                     <label for="userFirstName">Имя</label>
                     <input type="text"
@@ -105,16 +104,12 @@
                 </div>
                 <div class="buttons-container">
                     <button type="button"
-                            class="btn btn-primary"
-                            v-on:click="saveButtonClick"
-                    >Сохранить</button>
-                    <button type="button"
                             class="btn btn-secondary"
                             v-on:click="goTotList"
                     >
                         Вернуться к списку</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -124,9 +119,114 @@
     <script src="https://unpkg.com/v-tooltip"></script>
 
     <script>
+		const users = [
+			{
+				"id": "1",
+				"index": 0,
+				"guid": "4427027b-e1a0-4486-bb97-bd507a223fc4",
+				"picture": "https://pp.userapi.com/c841224/v841224567/26f74/YRtoifpK-zw.jpg",
+				"name": {
+					"first": "Olya",
+					"last": "Nurullova"
+				},
+				"company": "ASIMILINE",
+				"email": "roach.ashley@asimiline.io",
+				"phone": "+1 (915) 438-3825",
+				"address": "182 Oceanic Avenue, Thomasville, Puerto Rico, 4138",
+				"about": "Eu est Lorem fugiat quis commodo et commodo non enim laborum fugiat. Duis anim voluptate do elit magna aliquip ea quis. Duis magna eiusmod sit ad reprehenderit pariatur adipisicing excepteur proident pariatur. Exercitation aute elit anim ut mollit. Adipisicing esse nulla non dolore.",
+				"registered": "Monday, March 9, 2015 4:55 AM",
+				"first": "Olya"
+			},
+			{
+				"id": "2",
+				"index": 1,
+				"guid": "e8eb450c-755b-46fa-9659-7f3f9116aafa",
+				"picture": "https://pp.userapi.com/c630717/v630717752/4903c/gZuCofe5tqY.jpg",
+				"name": {
+					"first": "Nastya",
+					"last": "Hinton"
+				},
+				"company": "ANIXANG",
+				"email": "dixie.hinton@anixang.ca",
+				"phone": "+1 (887) 503-2225",
+				"address": "313 Boerum Place, Gila, Guam, 8108",
+				"about": "Consequat eiusmod cillum esse reprehenderit culpa amet tempor sit anim. Laboris enim ullamco aute consequat adipisicing laborum reprehenderit consectetur. Nulla fugiat ex nisi incididunt proident consectetur amet. Esse cupidatat laboris esse irure excepteur.",
+				"registered": "Saturday, May 20, 2017 5:06 AM"
+			},
+			{
+				"id": "3",
+				"index": 2,
+				"guid": "9c998b1a-d160-44fd-8d85-61a60200f62a",
+				"picture": "https://pp.userapi.com/c637320/v637320684/6350/n90Keoxjmeg.jpg",
+				"name": {
+					"first": "Belinda",
+					"last": "Ellis"
+				},
+				"company": "TERRAGO",
+				"email": "belinda.ellis@terrago.net",
+				"phone": "+1 (816) 425-2469",
+				"address": "749 Bergen Avenue, Helen, Kansas, 6361",
+				"about": "Aliquip sunt sunt non et aliqua do cillum occaecat dolore. Eiusmod eiusmod consectetur esse deserunt ea nisi. Do occaecat ipsum quis ullamco. Id tempor nostrud anim in sunt nisi laboris mollit cupidatat ea laboris nisi nisi. Occaecat tempor proident dolore anim et incididunt ex anim nostrud tempor dolor. Cupidatat incididunt nulla voluptate aliqua elit est magna cillum reprehenderit laborum laboris. Deserunt voluptate id aliquip duis.",
+				"registered": "Friday, May 22, 2015 7:04 AM"
+			},
+			{
+				"id": "4",
+				"index": 3,
+				"guid": "72b32563-f622-4763-ad56-327c961261a9",
+				"picture": "https://pp.userapi.com/c845120/v845120198/5e1dd/SJ3r3h9JjLY.jpg",
+				"name": {
+					"first": "Shana",
+					"last": "Hale"
+				},
+				"company": "MAZUDA",
+				"email": "shana.hale@mazuda.me",
+				"phone": "+1 (896) 486-2473",
+				"address": "780 Ira Court, Kent, New Mexico, 701",
+				"about": "Dolore commodo sit cupidatat cillum nostrud dolor reprehenderit duis sint nostrud adipisicing. Nisi dolor aliquip ullamco excepteur laborum esse exercitation deserunt anim tempor Lorem nisi ullamco. Do dolor est consequat do sit. Cillum pariatur laborum veniam eu.",
+				"registered": "Sunday, January 17, 2016 10:45 AM"
+			},
+			{
+				"id": "5",
+				"index": 4,
+				"guid": "ce0b2b1d-521d-4ca2-8915-0202735fff92",
+				"picture": "https://pp.userapi.com/c840337/v840337337/7ec54/AZ-7FJpDgmA.jpg",
+				"name": {
+					"first": "Sargent",
+					"last": "Nguyen"
+				},
+				"company": "VENDBLEND",
+				"email": "sargent.nguyen@vendblend.co.uk",
+				"phone": "+1 (846) 433-2719",
+				"address": "934 Forbell Street, Murillo, District Of Columbia, 2909",
+				"about": "Nostrud proident pariatur id excepteur sint esse consectetur exercitation occaecat quis aliquip do. Ullamco consectetur ut officia cupidatat quis anim sit esse aliqua sint deserunt aute elit nulla. Ipsum nulla non dolor laborum esse sit proident aute. Sunt Lorem non enim sunt occaecat laborum reprehenderit labore officia esse exercitation sint.",
+				"registered": "Sunday, February 1, 2015 4:36 PM"
+			}
+		];
+
+		const user = {
+			"id": "1",
+			"index": 0,
+			"guid": "4427027b-e1a0-4486-bb97-bd507a223fc4",
+			"picture": "https://pp.userapi.com/c841224/v841224567/26f74/YRtoifpK-zw.jpg",
+			"name": {
+				"first": "Olya",
+				"last": "Nurullova"
+			},
+			"company": "ASIMILINE",
+			"email": "roach.ashley@asimiline.io",
+			"phone": "+1 (915) 438-3825",
+			"address": "182 Oceanic Avenue, Thomasville, Puerto Rico, 4138",
+			"about": "Eu est Lorem fugiat quis commodo et commodo non enim laborum fugiat. Duis anim voluptate do elit magna aliquip ea quis. Duis magna eiusmod sit ad reprehenderit pariatur adipisicing excepteur proident pariatur. Exercitation aute elit anim ut mollit. Adipisicing esse nulla non dolore.",
+			"registered": "Monday, March 9, 2015 4:55 AM",
+			"first": "Olya"
+		};
+
         let UserList = {
             props: {
-            	users: Array
+            	users: {
+            		type: Array,
+                    required: true
+				}
 			},
             data: function () {
                 return {
@@ -156,8 +256,8 @@
                 toggleListVisibility: function () {
                     this.visible = !this.visible;
                 },
-				getFullName: function (friend) {
-					let fullName = `${friend.name.first || ''} ${friend.name.last || ''}`;
+				getFullName: function (user) {
+					let fullName = `${user.name.first || ''} ${user.name.last || ''}`;
 
 					return fullName;
 				},
@@ -173,6 +273,7 @@
             props: {
                 user: {
                     type: Object,
+                    required: true
                 }
             },
             methods: {
@@ -200,28 +301,26 @@
             },
             data: function () {
                 return {
-                    friends: [
+                    users: [
                     ],
                     isList: true,
                     user : {
                         name: {
-                            type: Object,
-                            required: true
                         }
                     }
                 }
             },
             mounted: function () {
-                getListData().then(reqData => {
-            		this.friends = JSON.parse(reqData);
-                });
+				this.users = users;
             },
             methods: {
                 showUserForm: function (id) {
-                    getUserData(id).then(userData => {
-                        this.user = JSON.parse(userData);
-                        this.isList = !this.isList;
-                    });
+					users.map(item => {
+						if (item.id == id) {
+							this.user = item;
+							this.isList = !this.isList;
+						}
+					});
                 },
                 onGoToList: function () {
                     this.isList = !this.isList;
@@ -232,64 +331,9 @@
                     } else {
                         this.user[fieldName] = newValue;
                     }
-                },
-                onSaveData: function () {
-                    const xhr = new XMLHttpRequest();
-
-                    xhr.open('PUT', `/users/${this.user.id}`, true);
-                    xhr.setRequestHeader('Content-Type', 'application/json');
-                    xhr.send(JSON.stringify(this.user));
                 }
             }
         });
-
-        function getListData () {
-        	return new Promise((resolve, reject) => {
-				let xhr = new XMLHttpRequest();
-
-				xhr.open('GET', '/users', true);
-
-				xhr.onreadystatechange = () => {
-					if (xhr.readyState !== 4) {
-						return;
-					}
-
-					if (xhr.status !== 200) {
-						const error =  new Error(xhr.status + ': ' + xhr.statusText);
-
-						reject(error);
-					} else {
-						resolve(xhr.responseText);
-					}
-				};
-
-				xhr.send();
-            })
-        }
-
-        function getUserData (id) {
-            return new Promise((resolve, reject) => {
-                let xhr = new XMLHttpRequest();
-
-                xhr.open('GET', `/users/${id}`, true);
-
-                xhr.onreadystatechange = () => {
-                    if (xhr.readyState !== 4) {
-                        return;
-                    }
-
-                    if (xhr.status !== 200) {
-                        const error =  new Error(xhr.status + ': ' + xhr.statusText);
-
-                        reject(error);
-                    } else {
-                        resolve(xhr.responseText);
-                    }
-                };
-
-                xhr.send();
-            })
-        }
     </script>
 </body>
 </html>
