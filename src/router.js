@@ -7,22 +7,22 @@ import Edit from "@/views/Edit.vue";
 Vue.use(Router);
 
 export default new Router({
-  mode: "history",
-  routes: [
-    {
-      path: "/",
-      name: "home",
-      component: Home
-    },
-    {
-      path: "/users",
-      name: "users",
-      component: Users
-    },
-    {
-      path: "/users/:id",
-      name: "edit",
-      component: Edit
-    }
-  ]
+	mode: "history",
+	routes: [
+		{
+			path: "/",
+			name: "home",
+			component: Home
+		},
+		{
+			path: "/users",
+			name: "users",
+			component: Users
+		},
+		{
+			path: "/users/:id",
+			name: "edit",
+			component: Edit
+		}
+	]
 });
