@@ -3,8 +3,8 @@
 		<div class="card-header">
 			Всего пользователей: <span class="users-total-count">{{usersCount}}</span>
 		</div>
-		<user-count-select v-on:user-count-change="onUserCountChange"></user-count-select>
 		<div class="card-body">
+			<user-count-select v-on:user-count-change="onUserCountChange"></user-count-select>
 			<table class="table table-striped users-table" v-show="visible">
 				<thead class="">
 				<tr class="users-table-heading">
@@ -19,7 +19,7 @@
 				</tr>
 				</thead>
 				<tbody>
-				<tr v-for="user in users"
+				<tr v-for="user in usersToShow"
 					v-bind:class="userClass(user)"
 					v-bind:key="user.id"
 					class="user-item"
@@ -88,12 +88,16 @@
 			return {
 				defaultPhoto: "http://via.placeholder.com/200x200?text=No%20photo",
 				visible: true,
-				editBtnTooltip: "Редактировать данные пользователя"
+				editBtnTooltip: "Редактировать данные пользователя",
+				countUsersPerPage: 2
 			};
 		},
 		computed: {
 			usersCount: function() {
 				return this.users.length;
+			},
+			usersToShow: function() {
+				return this.users.slice(0, this.countUsersPerPage);
 			},
 			showHideButtonText: function() {
 				return this.visible ? "Скрыть" : "Показать";
@@ -121,8 +125,8 @@
 			delBtnClick(id) {
 				this.$emit("delete-user", id);
 			},
-			onUserCountChange() {
-				debugger;
+			onUserCountChange(e) {
+				this.countUsersPerPage = e;
 			}
 		},
 		template: "#users-list"
