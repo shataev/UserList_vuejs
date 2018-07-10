@@ -5,7 +5,7 @@
 		</div>
 		<user-list
 				v-else v-bind:users="list"
-				v-on:delete-button-click="deleteUser">
+				v-on:delete-user="deleteUser">
 		</user-list>
 		<button type="button" v-on:click="loadData" class="btn btn-primary">
 			Загрузить данные

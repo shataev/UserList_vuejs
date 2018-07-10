@@ -5,12 +5,11 @@ module.exports = {
     },
     'extends': [
         'plugin:vue/essential',
-        '@vue/prettier'
+        //'@vue/prettier'
     ],
     rules: {
         'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-        //'indent': ['warn', 'tab'],
 		"vue/script-indent": ["error", 'tab', {
 			"baseIndent": 1,
 			"switchCase": 0,

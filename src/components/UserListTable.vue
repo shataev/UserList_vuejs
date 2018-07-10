@@ -3,6 +3,7 @@
 		<div class="card-header">
 			Всего пользователей: <span class="users-total-count">{{usersCount}}</span>
 		</div>
+		<user-count-select v-on:user-count-change="onUserCountChange"></user-count-select>
 		<div class="card-body">
 			<table class="table table-striped users-table" v-show="visible">
 				<thead class="">
@@ -59,6 +60,7 @@
 </template>
 
 <script>
+	import UserCountSelect from "@/components/UserCountSelect.vue";
 	import Vue from "vue";
 	import VTooltip from "v-tooltip";
 	import { library } from "@fortawesome/fontawesome-svg-core";
@@ -73,6 +75,9 @@
 
 	export default {
 		name: "UserList",
+		components: {
+			"user-count-select": UserCountSelect
+		},
 		props: {
 			users: {
 				type: Array,
@@ -114,7 +119,10 @@
 				return `user-${user.id}`;
 			},
 			delBtnClick(id) {
-				this.$emit("delete-button-click", id);
+				this.$emit("delete-user", id);
+			},
+			onUserCountChange() {
+				debugger;
 			}
 		},
 		template: "#users-list"

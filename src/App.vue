@@ -15,13 +15,13 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <router-link to="/" active-class="active" exact>
+                        <router-link to="/" exact>
                             <a href="" class="nav-link">
                                 Главная
                             </a>
                         </router-link>
                     </li>
-                    <router-link tag="li" class="nav-item" to="/users" active-class="active">
+                    <router-link tag="li" class="nav-item" to="/users">
                         <a href="" class="nav-link">
                             Список пользователей
                         </a>
@@ -37,17 +37,17 @@
 </template>
 
 <script>
-import NprogressContainer from "vue-nprogress/src/NprogressContainer.vue";
+	import NprogressContainer from "vue-nprogress/src/NprogressContainer.vue";
 
-export default {
-  components: {
-    NprogressContainer
-  }
-};
+	export default {
+		components: {
+			NprogressContainer
+		}
+	};
 </script>
 
 <style>
 #app {
-  margin-top: 60px;
+	margin-top: 60px;
 }
 </style>
