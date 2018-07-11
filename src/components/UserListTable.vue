@@ -55,12 +55,12 @@
 				</tr>
 				</tbody>
 			</table>
+			<paginator v-bind:pages="pagesCount"></paginator>
 		</div>
 	</div>
 </template>
 
 <script>
-	import UserCountSelect from "@/components/UserCountSelect.vue";
 	import Vue from "vue";
 	import VTooltip from "v-tooltip";
 	import { library } from "@fortawesome/fontawesome-svg-core";
@@ -76,7 +76,8 @@
 	export default {
 		name: "UserList",
 		components: {
-			"user-count-select": UserCountSelect
+			"user-count-select": () => import("@/components/UserCountSelect.vue"),
+			"paginator": () => import("@/components/Paginator.vue")
 		},
 		props: {
 			users: {
@@ -106,6 +107,9 @@
 				return this.visible
 					? "Скрыть список пользователей"
 					: "Показать список пользователей";
+			},
+			pagesCount: function() {
+				return Math.trunc(this.users.length / this.countUsersPerPage);
 			}
 		},
 		filters: {
