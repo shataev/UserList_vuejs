@@ -15,6 +15,7 @@
 <script>
 	export default {
 		name: 'user-count-select',
+
 		data() {
 			return {
 				counts: [2, 5, 10]
