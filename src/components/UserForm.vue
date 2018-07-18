@@ -41,8 +41,9 @@
 		</div>
 		<div class="form-group">
 			<label for="registeredDate">Дата регистрации</label>
-			<input type="date" class="form-control" id="registeredDate"
+			<input type="text" class="form-control" id="registeredDate"
 				   placeholder="" v-model="localUser.registered">
+			<datepicker v-model="localUser.registered"></datepicker>
 		</div>
 		<div class="form-group">
 			<label for="userCompany">Компания</label>
@@ -81,6 +82,9 @@
 
 	export default {
 		name: "UserForm",
+		components: {
+			'datepicker': () => import('@/components/DatePicker.vue'),
+		},
 		model: {
 			prop: "user",
 			event: "inputUserInfo"
