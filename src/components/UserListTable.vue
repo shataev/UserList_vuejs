@@ -55,7 +55,10 @@
 				</tr>
 				</tbody>
 			</table>
-			<paginator v-bind:pages="pagesCount"></paginator>
+			<paginator v-bind:pagesCount="pagesCount"
+					   v-bind:activePageNum="activePageNum"
+					   v-on:select-page-num="onSelectPageNum"
+			></paginator>
 		</div>
 	</div>
 </template>
@@ -90,7 +93,10 @@
 				defaultPhoto: "http://via.placeholder.com/200x200?text=No%20photo",
 				visible: true,
 				editBtnTooltip: "Редактировать данные пользователя",
-				countUsersPerPage: 2
+				countUsersPerPage: 2,
+				startUserIndex: 0,
+				lastUserIndex: 2,
+				activePageNum: 1
 			};
 		},
 		computed: {
@@ -98,7 +104,7 @@
 				return this.users.length;
 			},
 			usersToShow: function() {
-				return this.users.slice(0, this.countUsersPerPage);
+				return this.users.slice(this.startUserIndex, this.lastUserIndex);
 			},
 			showHideButtonText: function() {
 				return this.visible ? "Скрыть" : "Показать";
@@ -109,7 +115,7 @@
 					: "Показать список пользователей";
 			},
 			pagesCount: function() {
-				return Math.trunc(this.users.length / this.countUsersPerPage);
+				return Math.ceil(this.users.length / this.countUsersPerPage);
 			}
 		},
 		filters: {
@@ -130,7 +136,15 @@
 				this.$emit("delete-user", id);
 			},
 			onUserCountChange(e) {
-				this.countUsersPerPage = e;
+				this.activePageNum = 1;
+				this.countUsersPerPage = + e;
+				this.startUserIndex = 0;
+				this.lastUserIndex = this.countUsersPerPage;
+			},
+			onSelectPageNum(num) {
+				this.activePageNum = num;
+				this.startUserIndex = (num == 1) ? 0 : this.countUsersPerPage * (num - 1);
+				this.lastUserIndex = this.startUserIndex == 0 ?  this.countUsersPerPage : (this.countUsersPerPage * num);
 			}
 		},
 		template: "#users-list"
@@ -138,48 +152,52 @@
 </script>
 
 <style>
-.users-table-container {
-	margin-bottom: 16px;
-}
+	.users-table-container {
+		margin-bottom: 16px;
+	}
 
-.users-table th,
-.users-table td {
-	text-align: center;
-}
+	.users-table {
+		table-layout: fixed;
+	}
 
-.users-table td {
-	vertical-align: middle;
-}
+	.users-table th,
+	.users-table td {
+		text-align: center;
+	}
 
-.user-photo-wrapper {
-	width: 100px;
-	height: 100px;
-	overflow: hidden;
-	border-radius: 50%;
-	flex-shrink: 0;
-	margin: 0 auto;
-}
+	.users-table td {
+		vertical-align: middle;
+	}
 
-.user-photo {
-	width: 100%;
-}
+	.user-photo-wrapper {
+		width: 100px;
+		height: 100px;
+		overflow: hidden;
+		border-radius: 50%;
+		flex-shrink: 0;
+		margin: 0 auto;
+	}
 
-.edit-user-button {
-	margin-right: 10px;
-}
+	.user-photo {
+		width: 100%;
+	}
 
-.tooltip.vue-tooltip-theme {
-	opacity: 1;
-	left: 10px !Important;
-}
+	.edit-user-button {
+		margin-right: 10px;
+	}
 
-.tooltip-arrow {
-	left: -5px;
-	width: 10px;
-	height: 10px;
-	background: #000;
-	position: absolute;
-	top: -5px;
-	transform: rotateZ(-45deg);
-}
+	.tooltip.vue-tooltip-theme {
+		opacity: 1;
+		left: 10px !Important;
+	}
+
+	.tooltip-arrow {
+		left: -5px;
+		width: 10px;
+		height: 10px;
+		background: #000;
+		position: absolute;
+		top: -5px;
+		transform: rotateZ(-45deg);
+	}
 </style>
