@@ -6,16 +6,6 @@
 		<user-list
 				v-else v-bind:users="list"
 				v-on:delete-user="deleteUser">
-			<template slot="header-cols">
-				<th scope="col">Возраст</th>
-				<th scope="col">Компания</th>
-				<th scope="col">E-mail</th>
-			</template>
-			<template slot="body-cols" slot-scope="slotProps">
-				<td>{{slotProps.user.age}}</td>
-				<td>{{slotProps.user.company}}</td>
-				<td>{{slotProps.user.email}}</td>
-			</template>
 		</user-list>
 		<button type="button" v-on:click="loadData" class="btn btn-primary">
 			Загрузить данные
@@ -28,7 +18,7 @@
 	import UserList from "@/components/UserListTable.vue";
 
 	export default {
-		name: "UserListPage",
+		name: "PhonesBook",
 		components: {
 			"user-list": UserList
 		},
@@ -53,5 +43,6 @@
 	};
 </script>
 
-<style>
+<style scoped>
+
 </style>

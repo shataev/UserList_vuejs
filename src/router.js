@@ -21,6 +21,11 @@ export default new Router({
 			path: "/users/:id",
 			name: "edit",
 			component: () => import("@/views/Edit.vue")
+		},
+		{
+			path: "/users",
+			name: "phones",
+			component: () => import("@/views/PhonesBook.vue")
 		}
 	]
 });

@@ -26,6 +26,11 @@
                             Список пользователей
                         </a>
                     </router-link>
+                    <router-link tag="li" class="nav-item" to="/phones">
+                        <a href="" class="nav-link">
+                            Телефонный справочник
+                        </a>
+                    </router-link>
                 </ul>
             </div>
         </nav>

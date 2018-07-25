@@ -8,13 +8,17 @@
 			<table class="table table-striped users-table" v-show="visible">
 				<thead class="">
 				<tr class="users-table-heading">
-					<th scope="col">ID</th>
+					<!--<th scope="col">ID</th>-->
 					<th scope="col">Фото</th>
 					<th scope="col">Имя</th>
 					<th scope="col">Фамилия</th>
+					<th scope="col">Телефон</th>
+					<slot name="header-cols"></slot>
+					<!--
 					<th scope="col">Возраст</th>
 					<th scope="col">Компания</th>
 					<th scope="col">E-mail</th>
+					-->
 					<th scope="col">Действия</th>
 				</tr>
 				</thead>
@@ -24,7 +28,7 @@
 					v-bind:key="user.id"
 					class="user-item"
 				>
-					<td>{{user.id}}</td>
+					<!--<td>{{user.id}}</td>-->
 					<td>
 						<div class="user-photo-wrapper">
 							<img v-if="user.picture"
@@ -39,9 +43,13 @@
 					</td>
 					<td>{{user.firstName}}</td>
 					<td>{{user.lastName}}</td>
+					<td>{{user.phone}}</td>
+					<slot name="body-cols" v-bind:user="user"></slot>
+					<!--
 					<td>{{user.age}}</td>
 					<td>{{user.company}}</td>
 					<td>{{user.email}}</td>
+					-->
 					<td>
 						<router-link v-bind:to="`/users/${user.id}`"
 									 class="edit-user-button button btn btn-primary">
